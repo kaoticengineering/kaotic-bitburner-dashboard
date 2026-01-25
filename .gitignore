@@ -1,3 +1,7 @@
+
+caddy/
+ignore/
+
 # Logs
 logs
 *.log
