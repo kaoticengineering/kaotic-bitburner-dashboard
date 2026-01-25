@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bitburner Control Node</title>
+  <link rel="stylesheet" href="/css/dashboard.css" />
+</head>
+
+<body>
+  <div class="card">
+    <div id="workspace" class="workspace">
+
+      <!-- 
+      PLAYER WIDGET 
+      Currently, this widget includes titlebar,
+      Money, Hp, Karma, Kills, and Stats sections 
+      -->
+      <section class="panel player-panel widget" data-widget="player">
+        <div class="widget-bar">
+          <div class="section-title">Player</div>
+        </div>
+
+        <div class="widget-body">
+          <div class="player-grid">
+            <div class="stack">
+              <div class="block">
+                <div class="label">Money</div>
+                <div class="value mono money" id="hud-money">--</div>
+              </div>
+
+              <div class="block">
+                <div class="label">HP</div>
+                <div class="value mono hp" id="hud-hp">--</div>
+              </div>
+
+              <div class="block">
+                <div class="label">Karma</div>
+                <div class="value mono" id="hud-karma">--</div>
+              </div>
+			  
+			  <div class="block">
+                <div class="label">Kills</div>
+                <div class="value mono" id="hud-kills">--</div>
+              </div>
+
+              <div class="block stats-block fill">
+                <div class="label">Stats</div>
+                <div class="stats-mini">
+                  <div>HCK: <span id="s-hack">--</span></div>
+                  <div>CHA: <span id="s-cha">--</span></div>
+                  <div>STR: <span id="s-str">--</span></div>
+                  <div>DEF: <span id="s-def">--</span></div>
+                  <div>DEX: <span id="s-dex">--</span></div>
+                  <div>AGI: <span id="s-agi">--</span></div>
+                  <div>INT: <span id="s-int">--</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="resize-hint" aria-hidden="true"></div>
+      </section>
+
+      <!-- 
+      SCRIPT CONTROL WIDGET
+      Currently, this widget includes the titlebar
+      and Script List (see the dashboard.js for more details)
+      and the Add Script button	  
+      -->
+      <section class="panel controls-panel widget" data-widget="controls">
+        <div class="widget-bar">
+          <div class="section-title">Script Controls</div>
+        </div>
+
+        <div class="widget-body">
+          <div class="controls-wrap">
+            <div id="scriptControlsList" class="script-controls-list"></div>
+            <div class="controls-footer">
+              <button class="btn btn-add" id="btnAddScript" type="button">+ Add Script</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="resize-hint" aria-hidden="true"></div>
+      </section>
+
+      <!-- 
+      HOME SERVER WIDGET
+      Currently, this widget just has the titlebar,
+      RAM info (total, used, free), and a filtered List
+      of the Active Scripts running on Home. Note, I 
+      only filter my attack/grow/weaken scripts from this
+      list at the moment (which is done in BB, not here..)
+      -->
+      <section class="panel home-panel widget" data-widget="home">
+        <div class="widget-bar">
+          <div class="section-title">Home Server</div>
+        </div>
+
+        <div class="widget-body">
+          <div class="home-grid">
+            <div class="block">
+              <div class="label">Memory</div>
+
+              <div class="ram-lines mono">
+                <div class="ram-row">
+                  <span class="k">Total</span>
+                  <span class="ram-val" id="ram-total">--</span>
+                  <span class="ram-pct"></span>
+                </div>
+
+                <div class="ram-row">
+                  <span class="k">Used</span>
+                  <span class="ram-val" id="ram-used">--</span>
+                  <span class="ram-pct" id="ram-used-pct">--</span>
+                </div>
+
+                <div class="ram-row">
+                  <span class="k">Free</span>
+                  <span class="ram-val" id="ram-free">--</span>
+                  <span class="ram-pct" id="ram-free-pct">--</span>
+                </div>
+              </div>
+            </div>
+			
+			      <div class="block fill">
+              <div class="label">Active Scripts (Filtered)</div>
+              <div class="scripts-list mono" id="hud-scripts">--</div>
+            </div>
+			
+          </div>
+        </div>
+
+        <div class="resize-hint" aria-hidden="true"></div>
+      </section>
+
+      <!-- 
+	    COMMAND LOG WIDGET
+      Currently, this is just the titlebar
+      and a log. The log could probably be
+      better.. I'll work on it later.. but 
+      it should show when any commands are
+      sent to the Node server -> BB. E.g.
+      "HH:MM:SS XM | RUN stonks_daemon.js | 1 thread | no args"
+      "HH:MM:SS XM | CHG ACTIVITY TO Gym | Powerhouse Gym | Agility | Focus"
+      -->
+      <section class="panel log-panel widget" data-widget="log">
+        <div class="widget-bar">
+          <div class="section-title">Command Log</div>
+        </div>
+
+        <div class="widget-body">
+          <div id="commandLog" class="log"></div>
+        </div>
+
+        <div class="resize-hint" aria-hidden="true"></div>
+      </section>
+
+      <!-- 
+	    CURRENT WORK WIDGET 
+      Currently, we have a titlebar, we have
+      the Current Activity and the stat/sec you
+      probably care about (e.g. if it's Gym and you
+      are training Agility.. it's going to show AGI xx.xxx Exp / sec. 
+      If it's a faction.. it'll show faction rep / sec.), and
+      controls to change the activity
+      Note that I'm not far enough in the game to know what this widget
+      can't handle well.. I know one example of something it currently
+      can't handle gracefully and that's grafting. It doesn't break..
+      it just isn't great..
+      -->
+      <section class="panel work-panel widget" data-widget="work">
+        <div class="widget-bar">
+          <div class="section-title">Current Work and Controls</div>
+        </div>
+
+        <div class="widget-body">
+          <div class="work-grid">
+            <div class="block work-current">
+              <div class="value mono" id="work-current-type">Idle</div>
+              <div class="mono" id="work-current-details">—</div>
+            </div>
+
+            <div class="block fill">
+              <div class="work-controls">
+                <select id="work-type" class="input">
+                  <option value="COMPANY">Company</option>
+                  <option value="FACTION">Faction</option>
+                  <option value="CRIME">Crime</option>
+                  <option value="GYM">Gym</option>
+                  <option value="UNIV">University</option>
+                </select>
+                <select id="work-name" class="input"></select>
+				<select id="work-detail" class="input"></select>
+                <select id="work-focus" class="input">
+                  <option value="true">Focus</option>
+                  <option value="false">Don't Focus</option>
+				</select>
+
+                <div class="work-buttons"> <!-- "buttons" is kind of a misnomer.. -->
+                  <button class="btn" id="btnWorkStart" type="button">Run</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="resize-hint" aria-hidden="true"></div>
+      </section>
+
+      <!--
+        A Misc Status Widget      
+      -->
+      <section class="panel system-panel widget" data-widget="system">
+        <div class="widget-bar">
+          <div class="section-title">System Status</div>
+        </div>
+
+        <div class="widget-body">
+          <div class="system-grid">
+            
+            <!-- City & BitNode -->
+            <div class="block">
+              <div class="label">Location</div>
+              <div class="value mono" id="hud-city">--</div>
+            </div>
+            
+            <div class="block">
+              <div class="label">BitNode</div>
+              <div class="value mono bitnode-value" id="hud-bitnode">--</div>
+            </div>
+
+            <!-- Owned Programs & APIs (combined) -->
+            <div class="block">
+              <div class="label">Programs &amp; APIs</div>
+              <div class="ownership-grid mono">
+                <!-- Top row: TOR | EXEs -->
+                <div class="ownership-row">
+                  <span class="exe tor-badge" data-exe="tor" title="TOR Router">TOR</span>
+                  <span class="ownership-divider"></span>
+                  <span class="exe" data-exe="brute" title="BruteSSH.exe">SSH</span>
+                  <span class="exe" data-exe="ftp" title="FTPCrack.exe">FTP</span>
+                  <span class="exe" data-exe="smtp" title="relaySMTP.exe">SMTP</span>
+                  <span class="exe" data-exe="http" title="HTTPWorm.exe">HTTP</span>
+                  <span class="exe" data-exe="sql" title="SQLInject.exe">SQL</span>
+                </div>
+                <!-- Bottom row: APIs -->
+                <div class="ownership-row api-row-centered">
+                  <span class="exe api-badge" data-api="stock" title="Stock Market API">STOCK API</span>
+                  <span class="exe api-badge" data-api="4s" title="4S Market Data">4S API</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hardware (separate block below) -->
+            <div class="block">
+              <div class="label">Hardware</div>
+              <div class="api-grid mono">
+                <div class="api-row">
+                  <span class="api-label">Home RAM</span>
+                  <span class="api-val" id="hud-homeram">--</span>
+                </div>
+                <div class="api-row">
+                  <span class="api-label">Home Cores</span>
+                  <span class="api-val" id="hud-homecores">--</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- IPvGO Bonuses (collapsible or smaller) -->
+            <div class="block fill">
+              <div class="label">IPvGO Bonuses</div>
+              <div class="ipvgo-grid mono" id="hud-ipvgo">--</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="resize-hint" aria-hidden="true"></div>
+      </section>
+
+
+
+
+    </div>
+
+	<!-- 
+		I used to have this visible all the time at the bottom right of the page.
+		It's technically still there.. but I made the page tall so it's
+		effectively hidden.. I should probably change that at some point.. maybe it could be it's own widget lol..
+	-->
+    <div class="page-status">
+      <span id="hud-status" class="status-badge">Waiting for Data...</span>
+    </div>
+  </div>
+
+	<!-- Libraries first -->
+	<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+	<script src="/js/lib/data.js"></script>
+	<script src="/js/lib/fmt.js"></script>
+	<script src="/js/lib/util.js"></script>
+
+	<!-- Widgets -->
+	<script src="/js/widgets/player.js"></script>
+	<script src="/js/widgets/home.js"></script>
+	<script src="/js/widgets/system.js"></script>
+	<script src="/js/widgets/work.js"></script>
+	<script src="/js/widgets/scripts.js"></script>
+	<script src="/js/widgets/log.js"></script>
+	<script src="/js/widgets/floating.js"></script>
+
+	<!-- Main orchestrator -->
+	<script src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,848 @@
+/* Change however you desire */
+:root {
+    --font-size: 16px;
+    --ui-scale: 1rem;
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+    --work-details: 700;
+    --btn-weight: 700;
+    --ram-weight: 800;
+    --value-weight: 800;
+    --bg: #000000;
+    --bg2: #000000;
+    --panel: #000000;
+    --surface: #001825;
+    
+    --text: #00fcff;
+    --text2: #ff6900;
+    --placeholder-text-color: var(--text);
+    
+    --all-btns: var(--surface);
+    --btnWorkStart-color: var(--all-btns);
+    --btnWorkStartText-color: var(--text);
+    --scriptRun-btn-color: var(--all-btns);
+    --scriptKill-btn-color: var(--all-btns);
+    --scriptRestart-btn-color: var(--all-btns);
+    --scriptRemove-btn-color: var(--all-btns);
+    --scriptText-btn-color: var(--text);
+    --btnAddScript-color: var(--all-btns);
+    
+    --border: 3px solid #000000;
+    --border-bottom: 7px solid #00faff;
+    --panel-border: 3px solid #00e9ff;
+    --widget-title-border: var(--border);
+    --widget-title-bottom-border: var(--border-bottom);
+    --block-border-bottom: var(--border-bottom);
+    
+    --radius: 17px;
+    --gap: 0.4rem;
+ 
+    --hover-brightness: 1.8;
+    --hover-color: green;
+ 
+    --widget-w: calc(var(--ui-scale) * 2);
+    --widget-h: calc(var(--ui-scale) * 10);
+    --control-h: calc(var(--ui-scale) * 3);
+    --control-w: 50px;
+ 
+    --good: #A9D35E;
+    --warn: #FFD27A;
+    --bad: #FF6457;
+}
+
+
+*{ box-sizing: border-box; }
+html{ font-size: var(--font-size); }
+
+body{
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--text);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(229,139,58,0.10), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(200,74,46,0.12), transparent 55%),
+    var(--bg);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: var(--gap);
+}
+
+.mono{ font-family: var(--font-mono); }
+.money{ color: var(--text); }
+.hp{ color: var(--text); }
+
+.ok-inline{ color: var(--good); }
+.warn-inline{ color: var(--warn); }
+
+input::placeholder {
+  color: var(--placeholder-text-color);
+  opacity: .7;
+}
+
+.status-pill{
+  display: inline-block;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  border: 1px solid rgba(229,139,58,0.25);
+  opacity: 0.95;
+}
+.status-pill.ok{ background: rgba(169,211,94,0.18); color: var(--good); }
+.status-pill.pending{ background: rgba(255,210,122,0.18); color: var(--warn); }
+.status-pill.bad{ background: rgba(255,100,87,0.14); color: var(--bad); }
+
+/* Card (the Shell) */
+.card{
+  width: 98vw;
+  min-width: 560px;
+  padding: var(--gap);
+  border-radius: calc(var(--radius) + 4px);
+  border: var(--border);
+  background: linear-gradient(180deg, var(--bg2), var(--bg));
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.2) inset,
+    0 0 28px rgba(229,139,58,0.18);
+}
+
+/*
+   Panels, Blocks, Section Titles
+   Sections/Panels are the Widget Level
+   Blocks will be smaller divisions within 
+*/
+.panel{
+  background: var(--panel);
+  border: var(--panel-border);
+  border-radius: var(--radius);
+  padding: var(--gap);
+}
+
+.block{
+  background: var(--surface);
+  border: var(--border);
+  border-bottom: var(--block-border-bottom);
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+}
+
+/* Basically, the Widget Title */
+.section-title{
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text2);
+  font-size: 1.25rem;
+}
+
+/* Basically, Smaller Titles | Labels */
+.label{
+  margin: 0 0 0.35rem 0;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text2);
+  font-size: 0.95rem;
+}
+
+/* Value [e.g. of stats] */
+.value{
+  font-weight: var(--value-weight);
+  line-height: 1.05;
+  font-size: 1.35rem;
+  text-align: center;
+}
+
+/* 'workspace' ~ Area Widgets should exist */
+.workspace{
+  position: relative;
+  height: 200vh;   /* intentional scroll playground */
+  min-height: 640px;
+  border-radius: 16px;
+}
+
+/* More Widget-level stuff */
+.widget{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--widget-w);
+  height: var(--widget-h);
+  overflow: auto;
+  z-index: 1;
+  touch-action: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.widget-bar{
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: var(--gap);
+  background: var(--surface);
+  backdrop-filter: blur(4px);
+  border: var(--widget-title-border);
+  border-bottom: var(--widget-title-bottom-border);
+
+  margin-bottom: var(--gap);
+  border-radius: var(--radius);
+}
+.widget.is-dragging .widget-bar{ cursor: grabbing; }
+
+.widget-body{
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  
+}
+
+/* 
+   This is used to make it where the
+   bottom-most block in a widget, will
+   fill the empty space that'd otherwise
+   be below it
+*/
+.fill{ flex: 1; min-height: 0; }
+
+/* Player Widget */
+.player-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap);
+  flex: 1;
+  min-height: 0;
+}
+
+.stack{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  flex: 1;
+  min-height: 0;
+}
+
+.stats-block{ padding-top: 1.05rem; }
+
+.stats-mini{
+  margin-top: 0.25rem;
+  display: grid;
+  gap: 0.25rem;
+  line-height: 1.25;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+}
+.stats-mini > div{
+  display: grid;
+  grid-template-columns: 5ch 1fr;
+  gap: 0.6rem;
+}
+.stats-mini > div span{
+  justify-self: end;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Home Server Widget */
+.home-grid{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  flex: 1;
+  min-height: 0;
+}
+
+.scripts-list{
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.ram-lines{ display: grid; gap: 0.35rem; }
+
+.ram-row{
+  display: grid;
+  grid-template-columns: 2rem 1fr minmax(9ch, 11ch);
+  column-gap: 0.5rem;
+  align-items: baseline;
+}
+.ram-row .k{
+  color: var(--text2);
+  font-weight: var(--ram-weight);
+  font-size: 0.95rem;
+}
+.ram-val, .ram-pct{
+  justify-self: end;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+/* Buttons */
+.btn{
+  padding: 0.55rem 0.95rem;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(229,139,58,0.45);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: var(--btn-weight);
+  letter-spacing: 0.02em;
+}
+.btn:hover{ filter: brightness(var(--hover-brightness)); }
+.btn:active{ transform: translateY(1px); }
+
+/* Command Log Widget */
+.log-panel{ display: flex; flex-direction: column; }
+.log{
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--surface);
+  border: var(--border);
+  border-bottom: var(--border-bottom);
+  border-radius: 10px;
+  padding: 0.6rem 0.7rem;
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+
+
+/* Script Controls Widget */
+.controls-wrap{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+.controls-footer{
+  margin-top: var(--gap);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.script-controls-list{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.script-row{
+  width: 100%;
+  display: grid;
+  gap: var(--gap);
+  align-items: center;
+  grid-template-columns:
+    minmax(14rem, 1.2fr)      /* script name */
+    minmax(3.8rem, 4.4rem)    /* threads */
+    minmax(14rem, 1.2fr)      /* args */
+    minmax(4.3rem, 4.4rem)    /* run */
+    minmax(4.3rem, 4.4rem)    /* kill */
+    minmax(4.3rem, 4.4rem)    /* restart */
+    minmax(4.3rem, 4.4rem);   /* X */
+}
+
+/* Shared "field" look (inputs + buttons in script rows) */
+.script-name,
+.script-threads,
+.script-args,
+.script-btn,
+.script-remove{
+  height: var(--control-h);
+  border-radius: var(--radius);
+  border: var(--border);
+  box-sizing: border-box;
+}
+
+.script-name,
+.script-threads,
+.script-args{
+  background: var(--surface);
+  color: var(--text);
+}
+
+.script-name{
+  padding: 0 18px;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+.script-threads{
+  padding: 0 10px;
+  font-size: 1.05rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.script-args{
+  padding: 0 14px;
+  font-size: 1.05rem;
+  font-family: var(--font-mono);
+  line-height: 1.2;
+}
+
+/* Chrome/Edge/Safari - no spin */
+input[type="number"].no-spin::-webkit-outer-spin-button,
+input[type="number"].no-spin::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Script action buttons */
+.script-btn{
+  color: var(--scriptText-btn-color);
+  font-size: 1.05rem;
+  font-weight: var(--btn-weight);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+.script-btn.run{ background: var(--scriptRun-btn-color); }
+.script-btn.kill{ background: var(--scriptKill-btn-color); }
+.script-btn.restart{ background: var(--scriptRestart-btn-color); }
+.script-btn:active{ transform: translateY(1px); }
+
+.script-remove{
+  background: var(--scriptRemove-btn-color);
+  color: var(--text);
+  font-size: 1.9rem;
+  cursor: pointer;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.05;
+}
+
+.btn-add{
+  background: var(--btnAddScript-color);
+  border: var(--border);
+  height: var(--control-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  font-size: 1.15rem;
+  line-height: 1.2;
+  border-radius: var(--radius);
+  min-width: 15rem;
+}
+
+/* Work Widget */
+.work-grid{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  align-items: stretch;
+}
+.work-current{ text-align: center; }
+#work-current-type,
+#work-current-details{
+  display: inline;
+  font-size: 1.35rem;
+  font-weight: var(--work-details);
+  line-height: 1.05;
+  opacity: 1;
+}
+
+/* Remove the dark tray behind the Set Work form */
+.work-panel .work-grid > .block.fill{
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* Work form: single line */
+.work-controls{
+  display: grid;
+  gap: var(--gap);
+  align-items: center;
+  grid-template-columns:
+    minmax(8rem, 1.0fr)
+    minmax(14rem, 1.0fr)
+    minmax(12rem, 1.0fr)
+    minmax(8rem, 1.0fr)
+    minmax(4rem, 0.8fr);
+}
+
+/* Make button wrapper not create its own row */
+.work-buttons{ display: contents; margin: 0; }
+
+/* Work dropdowns: same look as script inputs */
+.input{
+  height: var(--control-h);
+  width: 100%;
+  min-width: 0;
+
+  border-radius: var(--radius);
+  border: var(--border);
+  background: var(--surface);
+  color: var(--text);
+
+  padding: 0 18px;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  font-family: var(--font-sans);
+}
+.input.mono{ font-family: var(--font-mono); }
+
+
+.input:disabled{
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* added this because I like any inputs to have a hover effect */
+.hoverin:hover{ filter: brightness(var(--hover-brightness)); }
+
+/* Run Activity button: match Script "Run" */
+#btnWorkStart{
+  height: var(--control-h);
+  border-radius: var(--radius);
+  border: var(--border);
+
+  background: var(--btnWorkStart-color);
+  color: var(--btnWorkStartText-color);
+
+  font-size: 1.05rem;
+  font-weight: var(--btn-weight);
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 16px;
+  white-space: nowrap;
+  line-height: 1.2;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Later, we can modify this a little more so that the
+   custom dropdowns can escape the widget without 
+   destroying anything. That's more work than it sounds
+   like or is currently worth..
+*/
+
+/* Custom Dropdown */
+.cselect{
+  position: relative;
+  width: 100%;
+}
+
+/* Hide select while keeping it in DOM */
+.cselect > select{
+  display: none;
+}
+
+.cselect__btn{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.cselect__btn:hover{ filter: brightness(var(--hover-brightness)); }
+
+.cselect.is-disabled .cselect__btn{
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.cselect__list{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 9999;
+
+  background: var(--surface);
+  border: var(--border);
+  border-bottom: var(--border-bottom);
+  border-radius: var(--radius);
+  padding: 0.35rem;
+  max-height: 440px;
+  overflow: auto;
+
+  display: none;
+}
+
+.cselect.is-open .cselect__list{
+  display: block;
+}
+
+.cselect__opt{
+  padding: 0.45rem 0.6rem;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--text);
+}
+
+.cselect__opt:hover,
+.cselect__opt.is-active{
+  background: var(--hover-color);
+}
+
+.cselect__opt.is-disabled{
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Section for the Status Widget */
+/* ===== SYSTEM STATUS WIDGET ===== */
+.system-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  flex: 1;
+  min-height: 0;
+}
+
+.bitnode-value {
+  font-size: 1.1rem;
+}
+
+/* EXE Grid - compact indicators */
+.exe-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  margin-top: 0.3rem;
+}
+
+.exe {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: var(--surface);
+  border: 1px solid var(--bg);
+  opacity: 0.35;
+  transition: opacity 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.exe.owned {
+  opacity: 1;
+  background: rgba(0, 212, 255, 0.2);
+  border-color: rgba(0, 212, 255, 0.5);
+  color: var(--good);
+  box-shadow: 0 0 6px rgba(0, 212, 255, 0.3);
+}
+
+/* API & Hardware rows */
+.api-grid {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.3rem;
+}
+
+.api-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.15rem 0;
+}
+
+.api-label {
+  color: var(--text2);
+  font-size: 0.9rem;
+}
+
+.api-val {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.api-val.yes { color: var(--good); }
+.api-val.no { color: var(--bad); opacity: 0.6; }
+
+/* IPvGO Bonuses grid */
+.ipvgo-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.25rem;
+  font-size: 0.95rem;
+  margin-top: 0.3rem;
+}
+
+.ipvgo-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ipvgo-label {
+  color: var(--text2);
+  font-size: 0.85rem;
+}
+
+.ipvgo-val {
+  color: var(--good);
+  font-weight: 600;
+}
+
+.ipvgo-val.neutral {
+  color: var(--text);
+  opacity: 0.7;
+}
+
+
+/* ===== PROGRAMS & APIS COMBINED BLOCK ===== */
+.ownership-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.3rem;
+}
+
+.ownership-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ownership-divider {
+  width: 2px;
+  height: 1.8rem;
+  background: var(--text);
+  opacity: 0.5;
+  margin: 0 0.3rem;
+}
+
+.api-row-centered {
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+/* Make API badges slightly wider */
+.api-badge {
+  min-width: 5.5rem;
+  text-align: center;
+}
+
+/* TOR badge can be styled slightly different if desired */
+.tor-badge {
+  min-width: 3rem;
+}
+
+
+
+/* Attempt at scrollbar styling */
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface);
+  border-radius: 5px;
+  border: 2px solid var(--bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00d4ff;  /* Your cyan accent on hover */
+}
+
+/* Optional: style the corner where scrollbars meet */
+::-webkit-scrollbar-corner {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00b8d4, #006064);
+  border-radius: 5px;
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #00e5ff, #00838f);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
+}
+
+
+
+
+.workspace::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  
+  /* Cyan-tinted noise that matches your theme */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.4' numOctaves='5' /%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0.98 0 0 0 0 1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  
+  background-size: 200px 200px;
+  opacity: 0.22;
+  mix-blend-mode: lighten;
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+
+
+
+
+
+
+/* Footer -> Status */
+.page-status{
+  margin-top: 0.35rem;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 0.25rem;
+}
+.status-badge{
+  background: var(--surface);
+  border: var(--border);
+  border-radius: 999px;
+  padding: 0.22rem 0.6rem;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.25);
+  color: var(--text2);
+  font-size: 1.05rem;
+}
+
