@@ -1,3 +1,4 @@
+
 caddy/
 ignore/
 
@@ -139,4 +140,8 @@ dist
 
 # Vite logs files
 vite.config.js.timestamp-*
+<<<<<<< HEAD
 vite.config.ts.timestamp-*
+=======
+vite.config.ts.timestamp-*
+>>>>>>> 99aa1a5fdf43e8a2fd221466d96e9637f26c956d
