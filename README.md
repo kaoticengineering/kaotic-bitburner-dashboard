@@ -57,8 +57,8 @@ A customizable, real-time external dashboard for [Bitburner](https://github.com/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/kaoticengineering/bitburner-controls-node.git
-   cd bitburner-controls-node
+   git clone https://github.com/kaoticengineering/kaotic-bitburner-dashboard.git
+   cd kaotic-bitburner-dashboard
    ```
 
 2. **Install dependencies**
