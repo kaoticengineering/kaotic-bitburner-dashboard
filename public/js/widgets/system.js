@@ -125,7 +125,8 @@
 
       const labelSpan = document.createElement("span");
       labelSpan.className = "ipvgo-label";
-      labelSpan.textContent = data.bonusDescription || faction;
+      labelSpan.textContent = window.DATA.IPVGO_LABEL_OVERRIDES?.[faction] ?? data.bonusDescription ?? faction;
+
 
       const valSpan = document.createElement("span");
       const pct = data.bonusPercent;

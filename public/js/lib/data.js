@@ -226,6 +226,20 @@
   };
 
   // ============================================================
+  // IPVGO LABEL OVERRIDES
+  // Short display labels for factions with long bonus descriptions
+  // ============================================================
+  const IPVGO_LABEL_OVERRIDES = {
+    "Tetrads": "+Combat Stats",
+	"Netburners": "+Hacknet Prod",
+	"The Black Hand": "+Hack $$$",
+	"Slum Snakes": "+Crime Chance",
+	"Daedalus": "+Rep Gain",
+	"Illuminati": ">> Hack Grow Weaken",
+  };
+
+
+  // ============================================================
   // EXPORT
   // ============================================================
   window.DATA = {
