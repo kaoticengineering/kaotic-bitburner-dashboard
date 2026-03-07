@@ -267,6 +267,9 @@
     
     // BitNode info
     BITNODE_NAMES,
+	
+	//IPvGO
+	IPVGO_LABEL_OVERRIDES,
   };
 
 })();
