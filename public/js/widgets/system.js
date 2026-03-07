@@ -125,17 +125,14 @@
 
       const labelSpan = document.createElement("span");
       labelSpan.className = "ipvgo-label";
-      labelSpan.textContent = faction;
+      labelSpan.textContent = data.bonusDescription || faction;
 
       const valSpan = document.createElement("span");
       const pct = data.bonusPercent;
-      const isNeutral = pct === 0;
-      valSpan.className = `ipvgo-val ${isNeutral ? "neutral" : ""}`;
+      valSpan.className = `ipvgo-val ${pct === 0 ? "neutral" : ""}`;
       valSpan.textContent = pct >= 0 ? `+${pct.toFixed(1)}%` : `${pct.toFixed(1)}%`;
 
-      if (data.bonusDescription) {
-        row.title = data.bonusDescription;
-      }
+      row.title = faction;
 
       row.appendChild(labelSpan);
       row.appendChild(valSpan);
@@ -143,7 +140,7 @@
     }
 
     if (container.children.length === 0) {
-      container.textContent = "No bonuses";
+      container.textContent = "No active bonuses";
     }
   }
 
