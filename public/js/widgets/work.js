@@ -67,6 +67,12 @@
         details = `${where}${statRate ? ` | ${statRate}` : ""}`;
         break;
       }
+      case "GRAFTING": {
+        const aug = work.augmentation ?? "Unknown";
+        const cycles = work.cyclesWorked ?? 0;
+        details = `${aug} — ${cycles} cycles`;
+        break;
+      }
       default: {
         details = JSON.stringify(work);
         break;
