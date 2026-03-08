@@ -70,7 +70,7 @@
       case "GRAFTING": {
         const aug = work.augmentation ?? "Unknown";
         const cycles = work.cyclesWorked ?? 0;
-        details = `${aug} — ${cycles} cycles`;
+        details = aug;
         break;
       }
       default: {
