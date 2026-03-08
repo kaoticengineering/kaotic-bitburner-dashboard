@@ -5,7 +5,7 @@ export async function main(ns) {
   ns.disableLog("getServerMaxRam");
 
   // ============== CONFIGURATION ==============
-  const SERVER_URL = "http://localhost:3000";
+  const SERVER_URL = "http://10.0.0.74:3000";
   const DATA_ENDPOINT = `${SERVER_URL}/bitburner-data`;
   const CMD_ENDPOINT = `${SERVER_URL}/commands/next`;
 
@@ -361,6 +361,7 @@ export async function main(ns) {
       crimeType: work.crimeType,
       classType: work.classType,
       location: work.location,
+      augmentation: work.augmentation,
 
       // Computed rates
       repPerSec: rateTracking.rep.perSecEma,
